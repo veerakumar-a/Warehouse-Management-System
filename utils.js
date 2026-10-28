@@ -1,0 +1,15 @@
+window.WMS=window.WMS||{};
+WMS.uid=(prefix='ID')=>prefix+'-'+Date.now().toString(36).toUpperCase()+'-'+Math.random().toString(36).slice(2,6).toUpperCase();
+WMS.today=()=>new Date().toISOString().slice(0,10);
+WMS.dateTime=()=>new Date().toISOString();
+WMS.escape=(v)=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+WMS.money=(n)=>new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR',maximumFractionDigits:2}).format(Number(n)||0);
+WMS.date=(v)=>{if(!v)return '—';const d=new Date(v);return Number.isNaN(+d)?String(v):d.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})};
+WMS.dateTimeLabel=(v)=>{if(!v)return '—';const d=new Date(v);return Number.isNaN(+d)?String(v):d.toLocaleString('en-IN',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})};
+WMS.toast=(message,type='success')=>{let r=document.querySelector('.toast-region');if(!r){r=document.createElement('div');r.className='toast-region';r.setAttribute('aria-live','polite');document.body.appendChild(r)}const el=document.createElement('div');el.className='toast '+type;el.textContent=message;r.appendChild(el);setTimeout(()=>el.remove(),3400)};
+WMS.download=(name,content,type='text/plain;charset=utf-8')=>{const a=document.createElement('a');const url=URL.createObjectURL(new Blob([content],{type}));a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),500)};
+WMS.csv=(rows)=>{if(!rows.length)return '';const cols=[...new Set(rows.flatMap(r=>Object.keys(r)))];const cell=v=>{let s=String(v??'');if(/^[=+@\-]/.test(s))s="'"+s;return '"'+s.replace(/"/g,'""')+'"'};return [cols.map(cell).join(','),...rows.map(r=>cols.map(k=>cell(r[k])).join(','))].join('\r\n')};
+WMS.downloadCSV=(name,rows)=>{if(!rows.length){WMS.toast('No records to export.','error');return}WMS.download(name,WMS.csv(rows),'text/csv;charset=utf-8')};
+WMS.byId=(id)=>document.getElementById(id);WMS.val=(id)=>WMS.byId(id)?.value?.trim()||'';
+WMS.safeNumber=(v)=>Number.isFinite(Number(v))?Number(v):0;
+WMS.confirmDelete=(message)=>window.confirm(message||'Delete this record? This action cannot be undone.');

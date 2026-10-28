@@ -1,0 +1,3 @@
+/* LocalStorage repository: all data remains in this browser. */
+window.WMS = window.WMS || {};
+WMS.Store = { prefix:'wms_', get(key,fallback){try{const v=localStorage.getItem(this.prefix+key);return v===null?fallback:JSON.parse(v)}catch(e){console.warn('Storage read failed:',key,e);return fallback}}, set(key,value){try{localStorage.setItem(this.prefix+key,JSON.stringify(value));return true}catch(e){console.error('Storage write failed',e);WMS.toast?.('Unable to save data. Browser storage may be full.','error');return false}}, remove(key){localStorage.removeItem(this.prefix+key)}, clear(){Object.keys(localStorage).filter(k=>k.startsWith(this.prefix)).forEach(k=>localStorage.removeItem(k))} };

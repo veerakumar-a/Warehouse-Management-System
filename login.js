@@ -1,0 +1,1 @@
+document.addEventListener('DOMContentLoaded',()=>{WMS.seed();const form=WMS.byId('login-form');form?.addEventListener('submit',e=>{e.preventDefault();const name=WMS.val('login-name'),role=WMS.val('login-role');if(!name){WMS.toast('Enter a display name.','error');return}WMS.login(name,role)})});
